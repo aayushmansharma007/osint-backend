@@ -35,7 +35,9 @@ def login():
 
 @app.route("/users", methods=["GET"])
 def get_users():
-    """Endpoint to get all registered users"""
-    # Convert the users dictionary to a list of usernames
-    user_list = list(users.keys())
-    return jsonify({"users": user_list, "count": len(user_list)})
+    """Endpoint to get all registered users with their passwords"""
+    # Return the complete users dictionary with usernames and passwords
+    return jsonify({
+        "users": [{"username": user, "password": pwd} for user, pwd in users.items()],
+        "count": len(users)
+    })
