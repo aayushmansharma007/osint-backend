@@ -5,7 +5,7 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 # In-memory storage for users with credits
-users = {}  # Format: {username: {"password": "hashed_pw", "credits": 10}}
+users = {}  # Format: {username: {"password": "hashed_pw", "credits": 0}}
 
 @app.route("/")
 def home():
@@ -20,7 +20,7 @@ def signup():
     if username in users:
         return jsonify({"error": "User already exists"}), 400
 
-    users[username] = {"password": password, "credits": 0}
+    users[username] = {"password": password, "credits": 10}  # Initialize with 10 credits
     return jsonify({"message": "Signup successful!"})
 
 @app.route("/login", methods=["POST"])
