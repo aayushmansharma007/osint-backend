@@ -34,10 +34,20 @@ def login():
         return jsonify({"message": "Login successful!"})
     return jsonify({"error": "Invalid credentials"}), 404
 
+@app.route("/<username>/credit", methods=["GET"])
+def get_user_credit(username):
+    """Endpoint to get a specific user's credit"""
+    if username not in users:
+        return jsonify({"error": "User not found"}), 404
+    
+    return jsonify({
+        "username": username,
+        "credits": users[username]["credits"]
+    })
+
 @app.route("/users", methods=["GET"])
 def get_users():
-    """Endpoint to get all registered users with their passwords"""
-    # Return the complete users dictionary with usernames and passwords
+    """Endpoint to get all registered users with their data"""
     return jsonify({
         "users": [{"username": user, "password": data["password"], "credits": data["credits"]} for user, data in users.items()],
         "count": len(users)
