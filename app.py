@@ -4,8 +4,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-# In-memory storage for users
-users = {}
+# In-memory storage for users with credits
+users = {}  # Format: {username: {"password": "hashed_pw", "credits": 10}}
 
 @app.route("/")
 def home():
@@ -20,7 +20,7 @@ def signup():
     if username in users:
         return jsonify({"error": "User already exists"}), 400
 
-    users[username] = password
+    users[username] = {"password": password, "credits": 0}
     return jsonify({"message": "Signup successful!"})
 
 @app.route("/login", methods=["POST"])
@@ -29,7 +29,8 @@ def login():
     username = data["username"]
     password = data["password"]
 
-    if users.get(username) == password:
+    user = users.get(username)
+    if user and user["password"] == password:
         return jsonify({"message": "Login successful!"})
     return jsonify({"error": "Invalid credentials"}), 404
 
@@ -38,6 +39,6 @@ def get_users():
     """Endpoint to get all registered users with their passwords"""
     # Return the complete users dictionary with usernames and passwords
     return jsonify({
-        "users": [{"username": user, "password": pwd} for user, pwd in users.items()],
+        "users": [{"username": user, "password": data["password"], "credits": data["credits"]} for user, data in users.items()],
         "count": len(users)
     })
